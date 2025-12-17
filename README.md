@@ -1,17 +1,19 @@
 # Heroku Automation Project
 
-Un proyecto de automatización web utilizando Puppeteer para navegar en páginas web, extraer información y generar PDFs, con registro de acciones en una base de datos MySQL mediante Sequelize.
+Un proyecto de automatización web utilizando Puppeteer para navegar en páginas web, extraer información textual y de enlaces, con registro dinámico de acciones en una base de datos MySQL mediante Sequelize.
 
 ## Descripción
 
-Este proyecto automatiza la navegación en el sitio web [The Internet](https://the-internet.herokuapp.com/), extrae texto de elementos específicos, genera un PDF de la página y registra todas las acciones realizadas en una base de datos para seguimiento y auditoría.
+Este proyecto automatiza la navegación en el sitio web [The Internet](https://the-internet.herokuapp.com/), extrae texto de elementos específicos (h1, h2), obtiene listados de enlaces, y registra todas las acciones realizadas en una base de datos para seguimiento y auditoría. Incluye utilidades para limpiar la tabla de registros y manejo dinámico de errores basado en el selector actual.
 
 ## Características
 
 - **Automatización Web**: Navegación automática en páginas web usando Puppeteer.
-- **Extracción de Datos**: Obtención de texto de elementos HTML específicos.
-- **Generación de PDFs**: Creación de archivos PDF de las páginas visitadas.
-- **Registro de Acciones**: Almacenamiento de todas las acciones (navegación, extracción, creación de PDF) en una base de datos MySQL.
+- **Extracción de Datos**: Obtención de texto de elementos HTML específicos (h1, h2).
+- **Extracción de Enlaces**: Obtención de listados completos de enlaces desde selectores específicos.
+- **Registro de Acciones**: Almacenamiento de todas las acciones (navegación, extracción de texto, extracción de enlaces) en una base de datos MySQL.
+- **Logging Dinámico de Errores**: Registro de errores con el selector específico donde ocurrió el fallo.
+- **Utilidades de Mantenimiento**: Herramientas para limpiar la tabla de acciones.
 - **Configuración Flexible**: Uso de variables de entorno para configuración segura.
 - **Manejo de Errores**: Registro de errores y estados de las operaciones.
 
@@ -87,8 +89,9 @@ Este proyecto automatiza la navegación en el sitio web [The Internet](https://t
    - Navega a la página principal de The Internet.
    - Espera 2 segundos.
    - Extrae el texto del elemento h1.
-   - Crea un PDF de la página en `src/pdf/archivoPrincipal.pdf`.
-   - Registra todas las acciones en la base de datos.
+   - Extrae el texto del elemento h2.
+   - Obtiene un listado completo de enlaces desde la lista ul.
+   - Registra todas las acciones en la base de datos, incluyendo errores con el selector específico.
 
 ## Estructura del Proyecto
 
