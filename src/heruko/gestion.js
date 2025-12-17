@@ -1,63 +1,81 @@
-import { createBrowser } from "../config/browser.js"
-import { WEB } from "../config/env.js"
-import Accion from "../models/Accion.js"
-import { wait } from "../utils/wait.js"
+import { createBrowser } from "../config/browser.js";
+import { WEB } from "../config/env.js";
+import Accion from "../models/Accion.js";
+import { HOME } from "../constants/selectores.js";
 
 export async function gestionarNavegacion() {
     const browser = await createBrowser();
     const page = await browser.newPage();
-    let currentSelector = null; // Variable para rastrear el selector actual
+    let currentSelector = null;
 
-    // Función helper para registrar acciones de forma limpia
     const logAction = async (tipo_accion, url, selector, status, detalles) => {
         await Accion.create({ tipo_accion, url, selector, status, detalles });
     };
 
     try {
-        //!Navegar a la página
         currentSelector = null;
         await page.goto(WEB);
-        await logAction('navigate', WEB, null, 'success', 'Navegación inicial a la página principal');
+        await logAction(
+            'navigate',
+            WEB,
+            null,
+            'success',
+            'Navegación inicial a la página principal'
+        );
 
-        await wait(2000);
+        await page.waitForSelector(HOME.LIST);
 
-        //!Esperar y obtener el texto del selector proporcionado
-        currentSelector = '#content > h1';
-        await page.waitForSelector('#content > h1');
-        const textoH1 = await page.evaluate(() => document.querySelector('#content > h1').textContent);
-        await logAction('get_text', page.url(), '#content > h1', 'success', `Texto obtenido: ${textoH1}`);
-        console.log('Texto del h1:', textoH1);
+        currentSelector = HOME.TITLE;
+        const textoH1 = await page.$eval(HOME.TITLE, el => el.textContent);
+        await logAction(
+            'get_text',
+            page.url(),
+            HOME.TITLE,
+            'success',
+            `Texto obtenido: ${textoH1}`
+        );
 
-        //!Obtener el segundo texto del selector proporcionado
-        currentSelector = '#content > h2';
-        await page.waitForSelector('#content > h2');
-        const tetx2 = await page.evaluate(() => document.querySelector('#content > h2').textContent);
-        await logAction("get_text", page.url(), "#content > h2", "success", `Texto obtenido: ${tetx2}`)
-        console.log('Texto del h2:', tetx2);
+        currentSelector = HOME.SUBTITLE;
+        const textoH2 = await page.$eval(HOME.SUBTITLE, el => el.textContent);
+        await logAction(
+            'get_text',
+            page.url(),
+            HOME.SUBTITLE,
+            'success',
+            `Texto obtenido: ${textoH2}`
+        );
 
-        //!Obtener un listado de todos los enlaces que hay
-        currentSelector = '#content > ul';
-        await page.waitForSelector("#content > ul")
-        const listadoEnlaces = await page.evaluate(()  => {
-            const lista = document.querySelectorAll("#content > ul a")
-            return Array.from(lista).map(enlace => ({
+        currentSelector = HOME.LIST;
+        const listadoEnlaces = await page.$$eval(HOME.LINKS, enlaces =>
+            enlaces.map(enlace => ({
                 texto: enlace.textContent.trim(),
                 url: enlace.href
             }))
-        })
-        console.log("Listado de enlaces:", listadoEnlaces);
-        listadoEnlaces.forEach( async(enlace, index) => {
-            console.log(`${index + 1}. ${enlace.texto} -> ${enlace.url}`);
-            await logAction('extract_link', page.url(), '#content > ul a', 'success', `Enlace ${index + 1}: ${enlace.texto} -> ${enlace.url}`);
-        })
-        
+        );
+
+        for (let indexx = 0; indexx < listadoEnlaces.length; indexx++) {
+            const enlace = listadoEnlaces[indexx];
+            await logAction(
+                'extract_link',
+                page.url(),
+                HOME.LINKS,
+                'success',
+                `Enlace ${indexx + 1}: ${enlace.texto} -> ${enlace.url}`
+            );
+        }
+
         
 
     } catch (error) {
-        console.error('Error durante la navegación:', error);
-        await logAction('error', page.url(), currentSelector, 'error', error.message);
+        await logAction(
+            'error',
+            page.url(),
+            currentSelector,
+            'error',
+            error.message
+        );
+        throw error;
     } finally {
         await browser.close();
     }
 }
-

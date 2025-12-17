@@ -4,7 +4,7 @@ Un proyecto de automatización web utilizando Puppeteer para navegar en páginas
 
 ## Descripción
 
-Este proyecto automatiza la navegación en el sitio web [The Internet](https://the-internet.herokuapp.com/), extrae texto de elementos específicos (h1, h2), obtiene listados de enlaces, y registra todas las acciones realizadas en una base de datos para seguimiento y auditoría. Incluye utilidades para limpiar la tabla de registros y manejo dinámico de errores basado en el selector actual.
+Este proyecto automatiza la navegación en el sitio web [The Internet](https://the-internet.herokuapp.com/), extrae texto de elementos específicos (h1, h2), obtiene listados de enlaces, y registra todas las acciones realizadas en una base de datos para seguimiento y auditoría. Incluye utilidades para limpiar la tabla de registros, constantes centralizadas para selectores, y manejo dinámico de errores basado en el selector actual.
 
 ## Características
 
@@ -14,6 +14,7 @@ Este proyecto automatiza la navegación en el sitio web [The Internet](https://t
 - **Registro de Acciones**: Almacenamiento de todas las acciones (navegación, extracción de texto, extracción de enlaces) en una base de datos MySQL.
 - **Logging Dinámico de Errores**: Registro de errores con el selector específico donde ocurrió el fallo.
 - **Utilidades de Mantenimiento**: Herramientas para limpiar la tabla de acciones.
+- **Constantes Centralizadas**: Uso de constantes para selectores CSS para facilitar mantenimiento.
 - **Configuración Flexible**: Uso de variables de entorno para configuración segura.
 - **Manejo de Errores**: Registro de errores y estados de las operaciones.
 
@@ -101,6 +102,8 @@ heroku/
 │   ├── config/
 │   │   ├── browser.js    # Configuración del navegador Puppeteer
 │   │   └── env.js        # Variables de entorno
+│   ├── constants/
+│   │   └── selectores.js # Constantes para selectores CSS
 │   ├── databases/
 │   │   └── db.js         # Conexión a la base de datos
 │   ├── models/
